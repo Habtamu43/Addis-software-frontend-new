@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSongs } from "../features/songs/songSlice";
 import { useEffect } from "react";
@@ -15,4 +16,12 @@ export default function SongList() {
       ))}
     </ul>
   );
+=======
+export interface Song {
+  _id?: string;
+  title: string;
+  artist: string;
+  album: string;
+  genre: string;
+>>>>>>> c0868605ac0fd6591830fbb69c420df6b61a5be7
 }
