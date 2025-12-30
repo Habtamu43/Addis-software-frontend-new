@@ -1,33 +1,43 @@
-<<<<<<< HEAD
-import SongList from "./components/SongList";
-
-export default function App() {
-  return (
-    <>
-      <h1>Songs</h1>
-      <SongList />
-    </>
-  );
-}
-=======
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import SongForm from "./components/SongForm";
 import SongList from "./components/SongList";
 import StatsPanel from "./components/StatsPanel";
 import GenreFilter from "./components/GenreFilter";
-import { AppContainer } from "./styles/layout";
+import { AppContainer, Title, Section } from "./styles/layout";
+import { fetchSongsStart } from "./features/songs/songSlice";
+import type { AppDispatch } from "./app/store";
 
 const App: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(fetchSongsStart());
+  }, [dispatch]);
+
   return (
     <AppContainer>
-      <h1>Songs Manager</h1>
-      <GenreFilter />
-      <SongForm />
-      <SongList />
-      <StatsPanel />
+      <div>
+        <Title>🎵 Songs Manager</Title>
+
+        <Section>
+          <GenreFilter />
+        </Section>
+
+        <Section>
+          <SongForm />
+        </Section>
+
+        <Section>
+          <SongList />
+        </Section>
+
+        <Section>
+          <StatsPanel />
+        </Section>
+      </div>
     </AppContainer>
   );
 };
 
 export default App;
->>>>>>> c0868605ac0fd6591830fbb69c420df6b61a5be7

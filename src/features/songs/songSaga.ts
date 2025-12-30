@@ -1,16 +1,4 @@
 import { call, put, takeEvery } from "redux-saga/effects";
-<<<<<<< HEAD
-import axios from "axios";
-import { fetchSongs, setSongs } from "./songSlice";
-
-function* getSongs() {
-  const res = yield call(() => axios.get("http://localhost:5000/api/songs"));
-  yield put(setSongs(res.data));
-}
-
-export default function* saga() {
-  yield takeEvery(fetchSongs.type, getSongs);
-=======
 import * as api from "../../api/songApi";
 import {
   fetchSongsStart,
@@ -25,12 +13,16 @@ import {
 } from "./songSlice";
 import { Song } from "./songTypes";
 
+const mapSongId = (song: any) => ({ ...song, id: song._id });
+
 // Fetch songs
 function* fetchSongsSaga() {
   try {
     const songs: Song[] = yield call(api.fetchSongs);
-    yield put(fetchSongsSuccess(songs));
+    const songsWithId = songs.map(mapSongId);
+    yield put(fetchSongsSuccess(songsWithId));
   } catch (error: any) {
+    console.error("Fetch songs failed:", error);
     yield put(fetchSongsError(error.message));
   }
 }
@@ -39,8 +31,9 @@ function* fetchSongsSaga() {
 function* addSongSaga(action: ReturnType<typeof addSongRequest>) {
   try {
     const song: Song = yield call(api.createSong, action.payload);
-    yield put(addSong(song));
+    yield put(addSong(mapSongId(song)));
   } catch (error: any) {
+    console.error("Add song failed:", error);
     yield put(fetchSongsError(error.message));
   }
 }
@@ -49,8 +42,9 @@ function* addSongSaga(action: ReturnType<typeof addSongRequest>) {
 function* updateSongSaga(action: ReturnType<typeof updateSongRequest>) {
   try {
     const song: Song = yield call(api.updateSong, action.payload);
-    yield put(updateSong(song));
+    yield put(updateSong(mapSongId(song)));
   } catch (error: any) {
+    console.error("Update song failed:", error);
     yield put(fetchSongsError(error.message));
   }
 }
@@ -61,15 +55,15 @@ function* deleteSongSaga(action: ReturnType<typeof deleteSongRequest>) {
     yield call(api.deleteSong, action.payload);
     yield put(removeSong(action.payload));
   } catch (error: any) {
+    console.error("Delete song failed:", error);
     yield put(fetchSongsError(error.message));
   }
 }
 
-// Watch request actions — pass action creators directly, NOT .type
+// Watch actions
 export default function* songSaga() {
   yield takeEvery(fetchSongsStart, fetchSongsSaga);
   yield takeEvery(addSongRequest, addSongSaga);
   yield takeEvery(updateSongRequest, updateSongSaga);
   yield takeEvery(deleteSongRequest, deleteSongSaga);
->>>>>>> c0868605ac0fd6591830fbb69c420df6b61a5be7
 }

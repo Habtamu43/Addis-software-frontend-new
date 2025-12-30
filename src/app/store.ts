@@ -3,25 +3,19 @@ import createSagaMiddleware from "redux-saga";
 import songReducer from "../features/songs/songSlice";
 import rootSaga from "./rootSaga";
 
-<<<<<<< HEAD
-const saga = createSagaMiddleware();
-
-export const store = configureStore({
-  reducer: { songs: songReducer },
-  middleware: g => g({ thunk: false }).concat(saga)
-});
-
-saga.run(rootSaga);
-=======
+// 1️⃣ Create the saga middleware
 const sagaMiddleware = createSagaMiddleware();
 
+// 2️⃣ Configure the store
 export const store = configureStore({
   reducer: { songs: songReducer },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware)
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
 });
 
+// 3️⃣ Run the root saga
 sagaMiddleware.run(rootSaga);
 
+// 4️⃣ Export types for TypeScript
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
->>>>>>> c0868605ac0fd6591830fbb69c420df6b61a5be7

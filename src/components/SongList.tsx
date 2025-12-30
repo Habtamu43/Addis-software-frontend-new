@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchSongsStart, removeSong } from "../features/songs/songSlice";
-import { RootState } from "../app/store";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../app/store";
+import { setEditingSong, deleteSongRequest } from "../features/songs/songSlice";
 import { Table, Button } from "../styles/layout";
 
 const SongList: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const songs = useSelector((state: RootState) => state.songs.songs);
+  const genreFilter = useSelector((state: RootState) => state.songs.genreFilter);
 
-  useEffect(() => {
-    dispatch(fetchSongsStart());
-  }, [dispatch]);
+  const filteredSongs = genreFilter
+    ? songs.filter((song) => song.genre === genreFilter)
+    : songs;
 
-  const handleDelete = (id?: string) => {
-    if (id) dispatch(removeSong(id));
-  };
+  if (filteredSongs.length === 0)
+    return <p style={{ textAlign: "center", fontStyle: "italic" }}>No songs available.</p>;
 
   return (
     <Table>
@@ -24,18 +24,29 @@ const SongList: React.FC = () => {
           <th>Artist</th>
           <th>Album</th>
           <th>Genre</th>
-          <th>Actions</th>
+          <th style={{ textAlign: "center" }}>Actions</th>
         </tr>
       </thead>
       <tbody>
-        {songs.map(song => (
-          <tr key={song._id}>
+        {filteredSongs.map((song) => (
+          <tr key={song.id}>
             <td>{song.title}</td>
             <td>{song.artist}</td>
             <td>{song.album}</td>
             <td>{song.genre}</td>
-            <td>
-              <Button onClick={() => handleDelete(song._id)}>Delete</Button>
+            <td style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
+              <Button
+                style={{ backgroundColor: "#fbbf24" }}
+                onClick={() => dispatch(setEditingSong(song))}
+              >
+                Edit
+              </Button>
+              <Button
+                style={{ backgroundColor: "#ef4444" }}
+                onClick={() => dispatch(deleteSongRequest(song.id))}
+              >
+                Delete
+              </Button>
             </td>
           </tr>
         ))}

@@ -1,20 +1,22 @@
 import axios from "axios";
 import { Song } from "../features/songs/songTypes";
 
-const BASE_URL = "http://localhost:5000/api/songs";
+// Fallback prevents crash if env is missing
+const BASE_URL =
+  `${import.meta.env.VITE_API_BASE_URL ?? "https://addis-software-backend-new.onrender.com"}/api/songs`;
 
 export const fetchSongs = async () => {
   const res = await axios.get<Song[]>(BASE_URL);
   return res.data;
 };
 
-export const createSong = async (song: Omit<Song, "_id">) => {
+export const createSong = async (song: Omit<Song, "id">) => {
   const res = await axios.post(BASE_URL, song);
   return res.data;
 };
 
 export const updateSong = async (song: Song) => {
-  const res = await axios.put(`${BASE_URL}/${song._id}`, song);
+  const res = await axios.put(`${BASE_URL}/${song.id}`, song);
   return res.data;
 };
 

@@ -1,6 +1,23 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import styled from "@emotion/styled";
+
+const Panel = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+`;
+
+const Card = styled.div`
+  flex: 1 1 150px;
+  background-color: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center;
+`;
 
 const StatsPanel: React.FC = () => {
   const songs = useSelector((state: RootState) => state.songs.songs);
@@ -14,18 +31,26 @@ const StatsPanel: React.FC = () => {
   }));
 
   return (
-    <div>
-      <h3>Statistics</h3>
-      <p>Total Songs: {totalSongs}</p>
-      <p>Total Artists: {totalArtists}</p>
-      <p>Total Albums: {totalAlbums}</p>
-      <h4>Songs by Genre:</h4>
-      <ul>
-        {genres.map(g => (
-          <li key={g.genre}>{g.genre}: {g.count}</li>
-        ))}
-      </ul>
-    </div>
+    <Panel>
+      <Card>
+        <h4>Total Songs</h4>
+        <p>{totalSongs}</p>
+      </Card>
+      <Card>
+        <h4>Total Artists</h4>
+        <p>{totalArtists}</p>
+      </Card>
+      <Card>
+        <h4>Total Albums</h4>
+        <p>{totalAlbums}</p>
+      </Card>
+      {genres.map(g => (
+        <Card key={g.genre}>
+          <h4>{g.genre}</h4>
+          <p>{g.count}</p>
+        </Card>
+      ))}
+    </Panel>
   );
 };
 
